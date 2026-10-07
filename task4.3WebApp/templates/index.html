@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Expense Tracker</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>Personal Expense Tracker</h1>
+            <p>SWE40006 Docker Web Application</p>
+        </header>
+
+        <section class="summary-card">
+            <p>Total Spending</p>
+            <h2>RM {{ "%.2f"|format(total) }}</h2>
+        </section>
+
+        <section class="form-card">
+
+            <h2>Add New Expense</h2>
+
+            <form action="{{ url_for('add_expense') }}" method="POST">
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+
+                    <input
+                        type="text"
+                        id="description"
+                        name="description"
+                        placeholder="e.g. Lunch"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+
+                    <select
+                        id="category"
+                        name="category"
+                        required
+                    >
+                        <option value="" disabled selected>
+                            Select category
+                        </option>
+
+                        <option value="Food">Food</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Education">Education</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Bills">Bills</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">Amount (RM)</label>
+
+                    <input
+                        type="number"
+                        id="amount"
+                        name="amount"
+                        placeholder="0.00"
+                        min="0.01"
+                        step="0.01"
+                        required
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    class="add-button"
+                >
+                    Add Expense
+                </button>
+
+            </form>
+
+        </section>
+
+        <section class="expenses-card">
+
+            <div class="section-header">
+                <h2>Expense History</h2>
+
+                <span>
+                    {{ expenses|length }} expense(s)
+                </span>
+            </div>
+
+            {% if expenses %}
+
+                <div class="expense-list">
+
+                    {% for expense in expenses %}
+
+                        <div class="expense-item">
+
+                            <div class="expense-info">
+
+                                <h3>
+                                    {{ expense["description"] }}
+                                </h3>
+
+                                <span class="category">
+                                    {{ expense["category"] }}
+                                </span>
+
+                            </div>
+
+                            <div class="expense-actions">
+
+                                <strong>
+                                    RM {{ "%.2f"|format(expense["amount"]) }}
+                                </strong>
+
+                                <form
+                                    action="{{ url_for('delete_expense', id=expense['id']) }}"
+                                    method="POST"
+                                >
+                                    <button
+                                        type="submit"
+                                        class="delete-button"
+                                    >
+                                        Delete
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-message">
+
+                    <h3>No expenses recorded</h3>
+
+                    <p>
+                        Add your first expense using the form above.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+        <footer>
+            <p>
+                SWE40006 Software Deployment and Evolution 
+            </p>
+
+            <p>
+                Done by Wong Jun Xin 
+            </p>
+
+            <p>
+                Flask + SQLite + Docker
+            </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
